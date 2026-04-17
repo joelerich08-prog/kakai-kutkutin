@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../middleware/cors.php';
+require_once __DIR__ . '/middleware/cors.php';
 
 header('Content-Type: application/json');
 
