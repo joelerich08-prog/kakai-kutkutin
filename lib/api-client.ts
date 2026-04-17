@@ -29,7 +29,8 @@ function buildUrl(input: string): string {
     return input
   }
 
-  return `${API_BASE_URL}/${stripLeadingSlash(input)}`
+  const normalizedInput = stripLeadingSlash(input.replace(/^\/api\//i, ''))
+  return `${API_BASE_URL}/${normalizedInput}`
 }
 
 export interface ApiFetchOptions extends Omit<RequestInit, 'body'> {
