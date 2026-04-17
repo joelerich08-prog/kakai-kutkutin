@@ -33,7 +33,7 @@ export function DashboardHeader({ title, description, headerAction }: DashboardH
   useEffect(() => {
     const loadAlerts = async () => {
       try {
-        const data = await apiFetch<Alert[]>('/api/alerts/get_all.php')
+        const data = await apiFetch<Alert[]>('alerts/get_all.php')
         const normalized = data.map(alert => ({
           ...alert,
           createdAt: new Date(alert.createdAt),

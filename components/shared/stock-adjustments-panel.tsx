@@ -97,7 +97,7 @@ export function StockAdjustmentPanel() {
           reason?: string | null
           performedBy?: string | null
           createdAt: string
-        }>>('/api/inventory/get_movements.php')
+        }>>('inventory/get_movements.php')
 
         if (!isMounted) {
           return

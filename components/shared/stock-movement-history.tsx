@@ -127,7 +127,7 @@ export function StockMovementHistory() {
     const fetchMovements = async () => {
       try {
         setIsLoading(true)
-        const data = await apiFetch<StockMovementApiRow[]>('/api/inventory/get_movements.php')
+        const data = await apiFetch<StockMovementApiRow[]>('inventory/get_movements.php')
         if (!isMounted) {
           return
         }
