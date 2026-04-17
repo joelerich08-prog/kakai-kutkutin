@@ -4,14 +4,22 @@ require_once __DIR__ . '/../../config/db.php';
 
 session_start();
 
-if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? null) !== 'admin') {
+$userRole = $_SESSION['user_role'] ?? null;
+$userId = $_SESSION['user_id'] ?? null;
+
+if (!$userId || !in_array($userRole, ['admin', 'stockman'])) {
     http_response_code(403);
-    echo json_encode(['error' => 'Unauthorized - Admin access required']);
+    echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
 try {
     $pdo = Database::getInstance();
+    
+    // For stockman, only show their own activity logs
+    $whereClause = $userRole === 'stockman' ? "WHERE al.userId = ?" : "";
+    $params = $userRole === 'stockman' ? [$userId] : [];
+    
     $stmt = $pdo->prepare("
         SELECT
             al.id,
@@ -25,11 +33,12 @@ try {
             al.createdAt as timestamp
         FROM activity_logs al
         LEFT JOIN users u ON al.userId = u.id
+        {$whereClause}
         ORDER BY al.createdAt DESC
         LIMIT 1000
     ");
-
-    $stmt->execute();
+    
+    $stmt->execute($params);
     $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($logs as &$log) {

@@ -29,13 +29,17 @@ if ($origin && in_array($origin, $allowedOrigins, true)) {
 $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] === '443');
 // For local dev (HTTP), use Lax. For production (HTTPS), use None to allow cross-origin cookies.
 $sameSite = $secure ? 'None' : 'Lax';
+
+// Determine the session cookie domain - use empty to match current host only for better compatibility
+$cookieDomain = '';
+
 ini_set('session.cookie_secure', $secure ? '1' : '0');
 ini_set('session.cookie_httponly', '1');
 ini_set('session.cookie_samesite', $sameSite);
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
-    'domain' => 'localhost',
+    'domain' => $cookieDomain,
     'secure' => $secure,
     'httponly' => true,
     'samesite' => $sameSite,
