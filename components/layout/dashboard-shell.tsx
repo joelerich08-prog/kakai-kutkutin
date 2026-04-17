@@ -30,7 +30,7 @@ export function DashboardShell({
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
-        router.push('/login')
+        router.push('/admin/login')
       } else if (user && allowedRoles && !allowedRoles.includes(user.role)) {
         router.push(getDefaultPath(user.role))
       }

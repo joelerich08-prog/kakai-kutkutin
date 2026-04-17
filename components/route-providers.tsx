@@ -39,10 +39,13 @@ export function CashierRouteProviders({ children }: { children: ReactNode }) {
     node => <ProductsProvider>{node}</ProductsProvider>,
     node => <SuppliersProvider>{node}</SuppliersProvider>,
     node => <CategoriesProvider>{node}</CategoriesProvider>,
+    node => <UsersProvider>{node}</UsersProvider>,
+    node => <ActivityLogsProvider>{node}</ActivityLogsProvider>,
     node => <CartProvider>{node}</CartProvider>,
     node => <InventoryProvider>{node}</InventoryProvider>,
     node => <TransactionProvider>{node}</TransactionProvider>,
     node => <OrderProvider>{node}</OrderProvider>,
+    node => <BatchProvider>{node}</BatchProvider>,
   ])
 }
 

@@ -126,12 +126,17 @@ export function StockmanSidebar() {
       .slice(0, 2)
   }
 
+  const getRoleLabel = (role?: string) => {
+    if (!role) return 'Stockman'
+    return role.charAt(0).toUpperCase() + role.slice(1)
+  }
+
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
         <Link href="/stockman/dashboard" className="flex items-center gap-2">
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            M
+            {user ? getInitials(user.name) : 'SM'}
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold">Kakai's Store</span>
@@ -213,6 +218,9 @@ export function StockmanSidebar() {
                   <div className="flex flex-col items-start text-left">
                     <span className="text-sm font-medium truncate max-w-[120px]">
                       {user?.name || "Stockman"}
+                    </span>
+                    <span className="text-[11px] uppercase tracking-[0.08em] text-muted-foreground">
+                      {getRoleLabel(user?.role)}
                     </span>
                     <span className="text-xs text-muted-foreground truncate max-w-[120px]">
                       {user?.email || "stockman@mystore.com"}

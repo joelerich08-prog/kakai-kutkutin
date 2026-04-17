@@ -24,7 +24,7 @@ export function StockmanShell({
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
-        router.push('/login')
+        router.push('/admin/login')
       } else if (user && user.role !== 'stockman') {
         // Redirect non-stockman users
         if (user.role === 'admin') {

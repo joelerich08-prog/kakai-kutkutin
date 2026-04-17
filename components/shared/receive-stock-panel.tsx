@@ -207,6 +207,7 @@ export function ReceiveStockPanel() {
     setQuantity(1)
     setUnitCost(0)
     setBatchNumber(generateBatchNumber())
+    setExpirationDate('')
     setManufacturingDate('')
     toast.success(`Added ${product.name}${variantLabel ? ` (${variantLabel})` : ''} to receive list`)
   }

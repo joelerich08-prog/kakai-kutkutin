@@ -219,12 +219,8 @@ export function StockLevelsOverview({
 
   const stats = {
     total: inventoryData.length,
-    lowStock:
-      inventoryData.filter((i) => i.isLowStock || i.isLowRetail || i.isLowShelf).length +
-      Array.from(variantInventoryByProduct.values()).flat().filter((i) => i.isLowStock || i.isLowRetail || i.isLowShelf).length,
-    outOfStock:
-      inventoryData.filter((i) => i.isOutOfStock).length +
-      Array.from(variantInventoryByProduct.values()).flat().filter((i) => i.isOutOfStock).length,
+    lowStock: inventoryData.filter((i) => i.isLowStock || i.isLowRetail || i.isLowShelf).length,
+    outOfStock: inventoryData.filter((i) => i.isOutOfStock).length,
   }
 
   const pagination = usePagination(filteredData, { itemsPerPage: 10 })
