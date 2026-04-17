@@ -14,10 +14,17 @@ class Database {
 
     public static function getInstance(): PDO {
         if (self::$instance === null) {
-            $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', self::HOST, self::DBNAME, self::CHARSET);
+            // Use environment variables with fallbacks for backward compatibility
+            $host = getenv('DB_HOST') ?: self::HOST;
+            $dbname = getenv('DB_NAME') ?: self::DBNAME;
+            $user = getenv('DB_USER') ?: self::USER;
+            $pass = getenv('DB_PASS') ?: self::PASS;
+            $charset = self::CHARSET;
+
+            $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', $host, $dbname, $charset);
 
             try {
-                self::$instance = new PDO($dsn, self::USER, self::PASS, [
+                self::$instance = new PDO($dsn, $user, $pass, [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 ]);
