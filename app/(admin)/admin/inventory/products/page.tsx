@@ -147,7 +147,7 @@ export default function ProductsPage() {
 
     const loadAdminProducts = async () => {
       try {
-        const adminProducts = await apiFetch<Product[]>('/api/products/get_admin_all.php')
+        const adminProducts = await apiFetch<Product[]>('products/get_admin_all.php')
         if (!isMounted) return
 
         setProducts(
@@ -277,7 +277,7 @@ export default function ProductsPage() {
     await refreshProducts()
 
     if (user?.role === 'admin') {
-      const adminProducts = await apiFetch<Product[]>('/api/products/get_admin_all.php')
+      const adminProducts = await apiFetch<Product[]>('products/get_admin_all.php')
       setProducts(
         (adminProducts as Product[]).map(product => ({
           ...product,
@@ -308,7 +308,7 @@ export default function ProductsPage() {
     }
 
     try {
-      await apiFetch('/api/products/create.php', {
+      await apiFetch('products/create.php', {
         method: 'POST',
         body: {
           creationType: newCreationType,
@@ -346,7 +346,7 @@ export default function ProductsPage() {
         createdCount: number
         createdProductsCount: number
         createdVariantsCount: number
-      }>('/api/products/backfill_variant_inventory.php', {
+      }>('products/backfill_variant_inventory.php', {
         method: 'POST',
       })
 
@@ -411,7 +411,7 @@ export default function ProductsPage() {
     if (!selectedProduct) return
 
     try {
-      await apiFetch('/api/products/update.php', {
+      await apiFetch('products/update.php', {
         method: 'POST',
         body: {
           id: selectedProduct.id,
@@ -449,7 +449,7 @@ export default function ProductsPage() {
     }
 
     try {
-      await apiFetch('/api/products/update_variant.php', {
+      await apiFetch('products/update_variant.php', {
         method: 'POST',
         body: {
           id: selectedVariant.id,
@@ -485,7 +485,7 @@ export default function ProductsPage() {
     if (!selectedProduct) return
 
     try {
-      await apiFetch('/api/products/delete.php', {
+      await apiFetch('products/delete.php', {
         method: 'POST',
         body: { id: selectedProduct.id },
       })

@@ -55,7 +55,7 @@ export default function CategoriesPage() {
 
   const loadCategories = async () => {
     try {
-      const adminCategories = await apiFetch<Category[]>('/api/categories/get_admin_all.php')
+      const adminCategories = await apiFetch<Category[]>('categories/get_admin_all.php')
       setCategories(adminCategories)
     } catch (error) {
       console.error('Failed to load admin categories:', error)
@@ -85,7 +85,7 @@ export default function CategoriesPage() {
     }
 
     try {
-      await apiFetch('/api/categories/create.php', {
+      await apiFetch('categories/create.php', {
         method: 'POST',
         body: {
           name: newCategory.name.trim(),
@@ -120,7 +120,7 @@ export default function CategoriesPage() {
     }
 
     try {
-      await apiFetch('/api/categories/update.php', {
+      await apiFetch('categories/update.php', {
         method: 'POST',
         body: {
           id: selectedCategory.id,
@@ -162,7 +162,7 @@ export default function CategoriesPage() {
     }
     
     try {
-      await apiFetch('/api/categories/delete.php', {
+      await apiFetch('categories/delete.php', {
         method: 'POST',
         body: { id: selectedCategory.id },
       })

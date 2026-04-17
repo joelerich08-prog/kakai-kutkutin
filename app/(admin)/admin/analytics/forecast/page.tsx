@@ -40,7 +40,7 @@ export default function ForecastPage() {
       try {
         const result = await apiFetch<{
           stockForecast: StockForecastItem[]
-        }>('/api/analytics/forecast.php')
+        }>('analytics/forecast.php')
 
         setStockForecast(result.stockForecast)
       } catch (error) {

@@ -75,7 +75,7 @@ export default function SuppliersPage() {
 
   const loadSuppliers = async () => {
     try {
-      const adminSuppliers = await apiFetch<Supplier[]>('/api/suppliers/get_admin_all.php')
+      const adminSuppliers = await apiFetch<Supplier[]>('suppliers/get_admin_all.php')
       setSuppliers(adminSuppliers)
     } catch (error) {
       console.error('Failed to load admin suppliers:', error)
@@ -122,7 +122,7 @@ export default function SuppliersPage() {
     }
 
     try {
-      await apiFetch('/api/suppliers/create.php', {
+      await apiFetch('suppliers/create.php', {
         method: 'POST',
         body: {
           name: newName.trim(),
@@ -163,7 +163,7 @@ export default function SuppliersPage() {
     }
 
     try {
-      await apiFetch('/api/suppliers/update.php', {
+      await apiFetch('suppliers/update.php', {
         method: 'POST',
         body: {
           id: selectedSupplier.id,
@@ -200,7 +200,7 @@ export default function SuppliersPage() {
     if (!supplierToDelete) return
 
     try {
-      await apiFetch('/api/suppliers/delete.php', {
+      await apiFetch('suppliers/delete.php', {
         method: 'POST',
         body: { id: supplierToDelete.id },
       })

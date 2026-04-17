@@ -101,7 +101,7 @@ export default function AlertsPage() {
 
   const loadAlerts = async () => {
     try {
-      const data = await apiFetch<Alert[]>('/api/alerts/get_all.php')
+      const data = await apiFetch<Alert[]>('alerts/get_all.php')
       const alertsWithDates = data.map(alert => ({
         ...alert,
         createdAt: new Date(alert.createdAt),
@@ -131,7 +131,7 @@ export default function AlertsPage() {
 
   const handleMarkAsRead = async (alertId: string) => {
     try {
-      await apiFetch('/api/alerts/mark_read.php', {
+      await apiFetch('alerts/mark_read.php', {
         method: 'POST',
         body: { ids: [alertId] },
       })
@@ -150,7 +150,7 @@ export default function AlertsPage() {
       if (ids.length === 0) {
         return
       }
-      await apiFetch('/api/alerts/mark_read.php', {
+      await apiFetch('alerts/mark_read.php', {
         method: 'POST',
         body: { ids },
       })
@@ -164,7 +164,7 @@ export default function AlertsPage() {
 
   const handleDeleteSelected = async () => {
     try {
-      await apiFetch('/api/alerts/delete.php', {
+      await apiFetch('alerts/delete.php', {
         method: 'POST',
         body: { ids: selectedAlerts },
       })
