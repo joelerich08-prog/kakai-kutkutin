@@ -1,4 +1,4 @@
--- Demo seed data for inventory management system
+﻿-- Demo seed data for inventory management system
 -- Includes basic categories, suppliers, users, permissions, products (5 with variants, 5 without), inventory levels, and batches
 --
 -- Run this after schema.sql on an empty database.
@@ -35,6 +35,7 @@ ON DUPLICATE KEY UPDATE
 INSERT INTO users (id, email, name, role, password_hash, avatar, isActive, createdAt, lastLogin)
 VALUES
     ('usr-admin-001', 'admin@mystore.com', 'Andrea Reyes', 'admin', '$2y$10$7XNTBKb9c4xmeY.mpRauZuPaUR5doK6ktxgNaXgxqTWtqF8lvEu7e', NULL, 1, '2026-04-01 08:00:00', '2026-04-15 08:10:00'),
+    ('usr-manager-001', 'manager@mystore.com', 'Marco Villanueva', 'manager', '$2y$10$7XNTBKb9c4xmeY.mpRauZuPaUR5doK6ktxgNaXgxqTWtqF8lvEu7e', NULL, 1, '2026-04-01 08:15:00', '2026-04-15 09:20:00'),
     ('usr-stockman-001', 'stock@mystore.com', 'Paolo Garcia', 'stockman', '$2y$10$Z.JO9zsEGPBfAtF.cmWYCueJIoA/D98V6gso0vknGMZgFLvywzDtq', NULL, 1, '2026-04-01 08:30:00', '2026-04-15 07:55:00'),
     ('usr-cashier-001', 'cashier@mystore.com', 'Jessa Cruz', 'cashier', '$2y$10$bPQNhbx25ryWUbSLAERVK.xO1KF80mWaAu.l.EGwj/bR4Qn26ry4O', NULL, 1, '2026-04-01 08:45:00', '2026-04-15 09:00:00')
 ON DUPLICATE KEY UPDATE
@@ -112,6 +113,24 @@ ON DUPLICATE KEY UPDATE
     retailPrice = VALUES(retailPrice),
     images = VALUES(images),
     isActive = VALUES(isActive);
+
+INSERT INTO product_variants (id, productId, name, priceAdjustment, sku)
+VALUES
+    ('var-coke-mismo-1', 'prd-coke-mismo', '250ml Bottle', 0.00, 'BEV-COKE-MISMO-250ML'),
+    ('var-coke-mismo-2', 'prd-coke-mismo', '330ml Bottle', 3.00, 'BEV-COKE-MISMO-330ML'),
+    ('var-kopiko-brown-1', 'prd-kopiko-brown', 'Single Sachet', 0.00, 'BRK-KOPIKO-BROWN-SINGLE'),
+    ('var-kopiko-brown-2', 'prd-kopiko-brown', 'Twin Pack', 6.00, 'BRK-KOPIKO-BROWN-TWIN'),
+    ('var-luckymepc-1', 'prd-luckymepc-chilimansi', 'Original Pack', 0.00, 'NDL-PC-CHILIMANSI-ORIG'),
+    ('var-luckymepc-2', 'prd-luckymepc-chilimansi', 'Extra Chilimansi', 1.50, 'NDL-PC-CHILIMANSI-XTRA'),
+    ('var-century-tuna-1', 'prd-century-tuna-hotspicy', 'Regular Can', 0.00, 'CAN-TUNA-HOTSPICY-REG'),
+    ('var-century-tuna-2', 'prd-century-tuna-hotspicy', 'Family Size', 18.00, 'CAN-TUNA-HOTSPICY-FAM'),
+    ('var-datu-puti-1', 'prd-datupoti-soysauce', '1 Liter Bottle', 0.00, 'CON-SOY-DP-1L'),
+    ('var-datu-puti-2', 'prd-datupoti-soysauce', '500ml Bottle', -12.00, 'CON-SOY-DP-500ML')
+ON DUPLICATE KEY UPDATE
+    productId = VALUES(productId),
+    name = VALUES(name),
+    priceAdjustment = VALUES(priceAdjustment),
+    sku = VALUES(sku);
 
 INSERT INTO inventory_levels (
     id,
@@ -219,24 +238,6 @@ ON DUPLICATE KEY UPDATE
     status = VALUES(status),
     notes = VALUES(notes);
 
-INSERT INTO product_variants (id, productId, name, priceAdjustment, sku)
-VALUES
-    ('var-coke-mismo-1', 'prd-coke-mismo', '250ml Bottle', 0.00, 'BEV-COKE-MISMO-250ML'),
-    ('var-coke-mismo-2', 'prd-coke-mismo', '330ml Bottle', 3.00, 'BEV-COKE-MISMO-330ML'),
-    ('var-kopiko-brown-1', 'prd-kopiko-brown', 'Single Sachet', 0.00, 'BRK-KOPIKO-BROWN-SINGLE'),
-    ('var-kopiko-brown-2', 'prd-kopiko-brown', 'Twin Pack', 6.00, 'BRK-KOPIKO-BROWN-TWIN'),
-    ('var-luckymepc-1', 'prd-luckymepc-chilimansi', 'Original Pack', 0.00, 'NDL-PC-CHILIMANSI-ORIG'),
-    ('var-luckymepc-2', 'prd-luckymepc-chilimansi', 'Extra Chilimansi', 1.50, 'NDL-PC-CHILIMANSI-XTRA'),
-    ('var-century-tuna-1', 'prd-century-tuna-hotspicy', 'Regular Can', 0.00, 'CAN-TUNA-HOTSPICY-REG'),
-    ('var-century-tuna-2', 'prd-century-tuna-hotspicy', 'Family Size', 18.00, 'CAN-TUNA-HOTSPICY-FAM'),
-    ('var-datu-puti-1', 'prd-datupoti-soysauce', '1 Liter Bottle', 0.00, 'CON-SOY-DP-1L'),
-    ('var-datu-puti-2', 'prd-datupoti-soysauce', '500ml Bottle', -12.00, 'CON-SOY-DP-500ML')
-ON DUPLICATE KEY UPDATE
-    productId = VALUES(productId),
-    name = VALUES(name),
-    priceAdjustment = VALUES(priceAdjustment),
-    sku = VALUES(sku);
-
 COMMIT;-- Combined demo seed data
 -- Loads the full demo set in one shot:
 -- 1. Categories and suppliers
@@ -283,6 +284,7 @@ ON DUPLICATE KEY UPDATE
 INSERT INTO users (id, email, name, role, password_hash, avatar, isActive, createdAt, lastLogin)
 VALUES
     ('usr-admin-001', 'admin@mystore.com', 'Andrea Reyes', 'admin', '$2y$10$7XNTBKb9c4xmeY.mpRauZuPaUR5doK6ktxgNaXgxqTWtqF8lvEu7e', NULL, 1, '2026-04-01 08:00:00', '2026-04-15 08:10:00'),
+    ('usr-manager-001', 'manager@mystore.com', 'Marco Villanueva', 'manager', '$2y$10$7XNTBKb9c4xmeY.mpRauZuPaUR5doK6ktxgNaXgxqTWtqF8lvEu7e', NULL, 1, '2026-04-01 08:15:00', '2026-04-15 09:20:00'),
     ('usr-stockman-001', 'stock@mystore.com', 'Paolo Garcia', 'stockman', '$2y$10$Z.JO9zsEGPBfAtF.cmWYCueJIoA/D98V6gso0vknGMZgFLvywzDtq', NULL, 1, '2026-04-01 08:30:00', '2026-04-15 07:55:00'),
     ('usr-cashier-001', 'cashier@mystore.com', 'Jessa Cruz', 'cashier', '$2y$10$bPQNhbx25ryWUbSLAERVK.xO1KF80mWaAu.l.EGwj/bR4Qn26ry4O', NULL, 1, '2026-04-01 08:45:00', '2026-04-15 09:00:00')
 ON DUPLICATE KEY UPDATE
@@ -312,7 +314,15 @@ VALUES
     ('stockman', 'suppliers', 'view', 1), ('stockman', 'suppliers', 'create', 0), ('stockman', 'suppliers', 'edit', 0), ('stockman', 'suppliers', 'delete', 0),
     ('stockman', 'reports', 'view', 0), ('stockman', 'reports', 'create', 0), ('stockman', 'reports', 'edit', 0), ('stockman', 'reports', 'delete', 0),
     ('stockman', 'users', 'view', 0), ('stockman', 'users', 'create', 0), ('stockman', 'users', 'edit', 0), ('stockman', 'users', 'delete', 0),
-    ('stockman', 'settings', 'view', 0), ('stockman', 'settings', 'create', 0), ('stockman', 'settings', 'edit', 0), ('stockman', 'settings', 'delete', 0)
+    ('stockman', 'settings', 'view', 0), ('stockman', 'settings', 'create', 0), ('stockman', 'settings', 'edit', 0), ('stockman', 'settings', 'delete', 0),
+    ('cashier', 'dashboard', 'view', 1), ('cashier', 'dashboard', 'create', 0), ('cashier', 'dashboard', 'edit', 0), ('cashier', 'dashboard', 'delete', 0),
+    ('cashier', 'pos', 'view', 1), ('cashier', 'pos', 'create', 1), ('cashier', 'pos', 'edit', 1), ('cashier', 'pos', 'delete', 1),
+    ('cashier', 'inventory', 'view', 1), ('cashier', 'inventory', 'create', 0), ('cashier', 'inventory', 'edit', 0), ('cashier', 'inventory', 'delete', 0),
+    ('cashier', 'products', 'view', 1), ('cashier', 'products', 'create', 0), ('cashier', 'products', 'edit', 0), ('cashier', 'products', 'delete', 0),
+    ('cashier', 'suppliers', 'view', 0), ('cashier', 'suppliers', 'create', 0), ('cashier', 'suppliers', 'edit', 0), ('cashier', 'suppliers', 'delete', 0),
+    ('cashier', 'reports', 'view', 0), ('cashier', 'reports', 'create', 0), ('cashier', 'reports', 'edit', 0), ('cashier', 'reports', 'delete', 0),
+    ('cashier', 'users', 'view', 0), ('cashier', 'users', 'create', 0), ('cashier', 'users', 'edit', 0), ('cashier', 'users', 'delete', 0),
+    ('cashier', 'settings', 'view', 0), ('cashier', 'settings', 'create', 0), ('cashier', 'settings', 'edit', 0), ('cashier', 'settings', 'delete', 0)
 ON DUPLICATE KEY UPDATE
     allowed = VALUES(allowed);
 
@@ -469,22 +479,20 @@ INSERT INTO transactions (
     total,
     paymentType,
     cashierId,
-    customerId,
     status,
     createdAt
 )
 VALUES
-    ('txn-20260415-001', 'INV-20260415-0001', 72.00, 0.00, 72.00, 'cash', 'usr-cashier-001', NULL, 'completed', '2026-04-15 09:05:00'),
-    ('txn-20260415-002', 'INV-20260415-0002', 92.00, 7.00, 85.00, 'gcash', 'usr-cashier-001', 'usr-customer-001', 'completed', '2026-04-15 10:18:00'),
-    ('txn-20260415-003', 'INV-20260415-0003', 101.00, 0.00, 101.00, 'gcash', 'usr-cashier-001', 'usr-customer-002', 'completed', '2026-04-15 11:42:00'),
-    ('txn-20260415-004', 'INV-20260415-0004', 139.00, 9.00, 130.00, 'cash', 'usr-cashier-001', NULL, 'completed', '2026-04-15 13:07:00')
+    ('txn-20260415-001', 'INV-20260415-0001', 72.00, 0.00, 72.00, 'cash', 'usr-cashier-001', 'completed', '2026-04-15 09:05:00'),
+    ('txn-20260415-002', 'INV-20260415-0002', 92.00, 7.00, 85.00, 'gcash', 'usr-cashier-001', 'completed', '2026-04-15 10:18:00'),
+    ('txn-20260415-003', 'INV-20260415-0003', 101.00, 0.00, 101.00, 'gcash', 'usr-cashier-001', 'completed', '2026-04-15 11:42:00'),
+    ('txn-20260415-004', 'INV-20260415-0004', 139.00, 9.00, 130.00, 'cash', 'usr-cashier-001', 'completed', '2026-04-15 13:07:00')
 ON DUPLICATE KEY UPDATE
     subtotal = VALUES(subtotal),
     discount = VALUES(discount),
     total = VALUES(total),
     paymentType = VALUES(paymentType),
     cashierId = VALUES(cashierId),
-    customerId = VALUES(customerId),
     status = VALUES(status),
     createdAt = VALUES(createdAt);
 
@@ -516,7 +524,6 @@ INSERT INTO orders (
     id,
     orderNo,
     source,
-    userId,
     customerName,
     customerPhone,
     total,
@@ -526,12 +533,11 @@ INSERT INTO orders (
     createdAt
 )
 VALUES
-    ('ord-20260415-001', 'ORD-20260415-0001', 'website', 'usr-customer-001', 'Miguel Santos', '09181234567', 119.00, 'gcash', 'pending', 'Please deliver after 5 PM.', '2026-04-15 08:30:00'),
-    ('ord-20260415-002', 'ORD-20260415-0002', 'facebook', NULL, 'Ana Dela Reyes', '09182345678', 104.00, 'cash', 'preparing', 'For same-day pickup.', '2026-04-15 09:50:00'),
-    ('ord-20260415-003', 'ORD-20260415-0003', 'sms', NULL, 'Rico Navarro', '09183456789', 157.00, 'gcash', 'ready', 'Customer will pick up before lunch.', '2026-04-15 10:40:00')
+    ('ord-20260415-001', 'ORD-20260415-0001', 'website', 'Miguel Santos', '09181234567', 119.00, 'gcash', 'pending', 'Please deliver after 5 PM.', '2026-04-15 08:30:00'),
+    ('ord-20260415-002', 'ORD-20260415-0002', 'facebook', 'Ana Dela Reyes', '09182345678', 104.00, 'cash', 'preparing', 'For same-day pickup.', '2026-04-15 09:50:00'),
+    ('ord-20260415-003', 'ORD-20260415-0003', 'sms', 'Rico Navarro', '09183456789', 157.00, 'gcash', 'ready', 'Customer will pick up before lunch.', '2026-04-15 10:40:00')
 ON DUPLICATE KEY UPDATE
     source = VALUES(source),
-    userId = VALUES(userId),
     customerName = VALUES(customerName),
     customerPhone = VALUES(customerPhone),
     total = VALUES(total),
@@ -617,24 +623,6 @@ ON DUPLICATE KEY UPDATE
     createdAt = VALUES(createdAt),
     updatedAt = VALUES(updatedAt);
 
-INSERT INTO product_variants (id, productId, name, priceAdjustment, sku)
-VALUES
-    ('var-coke-mismo-1', 'prd-coke-mismo', '250ml Bottle', 0.00, 'BEV-COKE-MISMO-250ML'),
-    ('var-coke-mismo-2', 'prd-coke-mismo', '330ml Bottle', 3.00, 'BEV-COKE-MISMO-330ML'),
-    ('var-kopiko-brown-1', 'prd-kopiko-brown', 'Single Sachet', 0.00, 'BRK-KOPIKO-BROWN-SINGLE'),
-    ('var-kopiko-brown-2', 'prd-kopiko-brown', 'Twin Pack', 6.00, 'BRK-KOPIKO-BROWN-TWIN'),
-    ('var-luckymepc-1', 'prd-luckymepc-chilimansi', 'Original Pack', 0.00, 'NDL-PC-CHILIMANSI-ORIG'),
-    ('var-luckymepc-2', 'prd-luckymepc-chilimansi', 'Extra Chilimansi', 1.50, 'NDL-PC-CHILIMANSI-XTRA'),
-    ('var-century-tuna-1', 'prd-century-tuna-hotspicy', 'Regular Can', 0.00, 'CAN-TUNA-HOTSPICY-REG'),
-    ('var-century-tuna-2', 'prd-century-tuna-hotspicy', 'Family Size', 18.00, 'CAN-TUNA-HOTSPICY-FAM'),
-    ('var-datu-puti-1', 'prd-datupoti-soysauce', '1 Liter Bottle', 0.00, 'CON-SOY-DP-1L'),
-    ('var-datu-puti-2', 'prd-datupoti-soysauce', '500ml Bottle', -12.00, 'CON-SOY-DP-500ML')
-ON DUPLICATE KEY UPDATE
-    productId = VALUES(productId),
-    name = VALUES(name),
-    priceAdjustment = VALUES(priceAdjustment),
-    sku = VALUES(sku);
-
 INSERT INTO alerts (id, type, priority, title, message, productId, isRead, createdAt)
 VALUES
     ('alt-low-coke', 'low_stock', 'high', 'Low stock on Coca-Cola Mismo', 'Coca-Cola Mismo 295ml is nearing its reorder level. Prepare the next replenishment order.', 'prd-coke-mismo', 0, '2026-04-15 08:45:00'),
@@ -669,3 +657,4 @@ ON DUPLICATE KEY UPDATE
     createdAt = VALUES(createdAt);
 
 COMMIT;
+

@@ -525,22 +525,20 @@ INSERT INTO transactions (
     total,
     paymentType,
     cashierId,
-    customerId,
     status,
     createdAt
 )
 VALUES
-    ('txn-20260415-001', 'INV-20260415-0001', 72.00, 0.00, 72.00, 'cash', 'usr-cashier-001', NULL, 'completed', '2026-04-15 09:05:00'),
-    ('txn-20260415-002', 'INV-20260415-0002', 92.00, 7.00, 85.00, 'gcash', 'usr-cashier-001', 'usr-customer-001', 'completed', '2026-04-15 10:18:00'),
-    ('txn-20260415-003', 'INV-20260415-0003', 101.00, 0.00, 101.00, 'gcash', 'usr-cashier-001', 'usr-customer-002', 'completed', '2026-04-15 11:42:00'),
-    ('txn-20260415-004', 'INV-20260415-0004', 139.00, 9.00, 130.00, 'cash', 'usr-cashier-001', NULL, 'completed', '2026-04-15 13:07:00')
+    ('txn-20260415-001', 'INV-20260415-0001', 72.00, 0.00, 72.00, 'cash', 'usr-cashier-001', 'completed', '2026-04-15 09:05:00'),
+    ('txn-20260415-002', 'INV-20260415-0002', 92.00, 7.00, 85.00, 'gcash', 'usr-cashier-001', 'completed', '2026-04-15 10:18:00'),
+    ('txn-20260415-003', 'INV-20260415-0003', 101.00, 0.00, 101.00, 'gcash', 'usr-cashier-001', 'completed', '2026-04-15 11:42:00'),
+    ('txn-20260415-004', 'INV-20260415-0004', 139.00, 9.00, 130.00, 'cash', 'usr-cashier-001', 'completed', '2026-04-15 13:07:00')
 ON DUPLICATE KEY UPDATE
     subtotal = VALUES(subtotal),
     discount = VALUES(discount),
     total = VALUES(total),
     paymentType = VALUES(paymentType),
     cashierId = VALUES(cashierId),
-    customerId = VALUES(customerId),
     status = VALUES(status),
     createdAt = VALUES(createdAt);
 
@@ -604,7 +602,6 @@ INSERT INTO orders (
     id,
     orderNo,
     source,
-    userId,
     customerName,
     customerPhone,
     total,
@@ -618,7 +615,6 @@ VALUES
         'ord-20260415-001',
         'ORD-20260415-0001',
         'website',
-        'usr-customer-001',
         'Miguel Santos',
         '09181234567',
         119.00,
@@ -631,7 +627,6 @@ VALUES
         'ord-20260415-002',
         'ORD-20260415-0002',
         'facebook',
-        NULL,
         'Ana Dela Reyes',
         '09182345678',
         104.00,
@@ -644,7 +639,6 @@ VALUES
         'ord-20260415-003',
         'ORD-20260415-0003',
         'sms',
-        NULL,
         'Rico Navarro',
         '09183456789',
         157.00,
@@ -655,7 +649,6 @@ VALUES
     )
 ON DUPLICATE KEY UPDATE
     source = VALUES(source),
-    userId = VALUES(userId),
     customerName = VALUES(customerName),
     customerPhone = VALUES(customerPhone),
     total = VALUES(total),

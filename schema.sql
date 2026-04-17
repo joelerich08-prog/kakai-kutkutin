@@ -118,11 +118,9 @@ CREATE TABLE transactions (
     total DECIMAL(10,2) NOT NULL,
     paymentType ENUM('cash', 'gcash') NOT NULL,
     cashierId VARCHAR(36) NOT NULL,
-    customerId VARCHAR(36),
     status ENUM('completed', 'refunded', 'cancelled') DEFAULT 'completed',
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cashierId) REFERENCES users(id),
-    FOREIGN KEY (customerId) REFERENCES users(id)
+    FOREIGN KEY (cashierId) REFERENCES users(id)
 ) ENGINE=InnoDB;
 
 -- Transaction items table
@@ -146,15 +144,13 @@ CREATE TABLE orders (
     id VARCHAR(36) PRIMARY KEY,
     orderNo VARCHAR(100) UNIQUE NOT NULL,
     source ENUM('facebook', 'sms', 'website') NOT NULL,
-    userId VARCHAR(36), -- For logged-in users
     customerName VARCHAR(255) NOT NULL,
     customerPhone VARCHAR(20) NOT NULL,
     total DECIMAL(10,2) NOT NULL,
     paymentMethod ENUM('cash', 'gcash'),
     status ENUM('pending', 'preparing', 'ready', 'completed', 'cancelled') DEFAULT 'pending',
     notes TEXT,
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userId) REFERENCES users(id)
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- Order items table
@@ -278,7 +274,6 @@ CREATE INDEX idx_product_batches_product ON product_batches(productId);
 CREATE INDEX idx_product_batches_expiration ON product_batches(expirationDate);
 CREATE INDEX idx_transactions_cashier ON transactions(cashierId);
 CREATE INDEX idx_transactions_created ON transactions(createdAt);
-CREATE INDEX idx_orders_user ON orders(userId);
 CREATE INDEX idx_orders_created ON orders(createdAt);
 CREATE INDEX idx_stock_movements_product ON stock_movements(productId);
 CREATE INDEX idx_stock_movements_created ON stock_movements(createdAt);
