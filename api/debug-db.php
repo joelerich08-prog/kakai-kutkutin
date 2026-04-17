@@ -4,7 +4,7 @@ require_once __DIR__ . '/middleware/cors.php';
 header('Content-Type: application/json');
 
 try {
-    require_once __DIR__ . '/../../config/db.php';
+    require_once __DIR__ . '/../config/db.php';
     $pdo = Database::getInstance();
     echo json_encode([
         'status' => 'success',
