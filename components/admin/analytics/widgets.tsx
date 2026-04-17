@@ -50,7 +50,7 @@ import {
 import { Progress } from '@/components/ui/progress'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-const COLORS = ['#22c55e', '#3b82f6', '#8b5cf6']
+const COLORS = ['#16a34a', '#1d4ed8', '#7c3aed']
 
 function AnalyticsCard({ children }: { children: React.ReactNode }) {
   return <Card>{children}</Card>
@@ -250,7 +250,7 @@ export function AnalyticsStatsCards() {
             <CardDescription>Daily sales over the selected period</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[300px]">
+            <div className="h-[300px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={salesData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -258,7 +258,7 @@ export function AnalyticsStatsCards() {
                   <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`} />
                   <Tooltip
                     formatter={(value: number) => [formatCurrency(value), 'Sales']}
-                    contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
+                    contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
                   />
                   <Line type="monotone" dataKey="sales" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ fill: 'hsl(var(--primary))' }} />
                 </LineChart>
@@ -273,7 +273,7 @@ export function AnalyticsStatsCards() {
             <CardDescription>Distribution by payment type</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px]">
+            <div className="h-[200px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={paymentData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} dataKey="total" nameKey="type" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
@@ -281,7 +281,7 @@ export function AnalyticsStatsCards() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
+                  <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -316,13 +316,13 @@ export function AnalyticsVolumeCard() {
         <CardDescription>Number of transactions per day</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px]">
+        <div className="h-[250px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={salesData}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
               <XAxis dataKey="date" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
               <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-              <Tooltip formatter={(value: number) => [value, 'Transactions']} contentStyle={{ backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
+              <Tooltip formatter={(value: number) => [value, 'Transactions']} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }} />
               <Bar dataKey="transactions" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
@@ -511,3 +511,5 @@ export function ItemAnalyticsSection() {
     </Card>
   )
 }
+
+

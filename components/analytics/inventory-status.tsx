@@ -72,7 +72,7 @@ export function InventoryStatus() {
           </div>
         )}
         {data.length > 0 ? (
-          <div className="h-[300px] w-full overflow-x-auto">
+          <div className="h-[300px] w-full overflow-x-auto rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
             <ResponsiveContainer width="100%" height="100%" minWidth={400}>
               <BarChart data={data} layout="vertical" margin={{ top: 10, right: 10, left: 60, bottom: 0 }}>
                 <XAxis
@@ -136,3 +136,4 @@ export function InventoryStatus() {
     </Card>
   )
 }
+

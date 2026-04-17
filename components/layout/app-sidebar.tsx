@@ -71,12 +71,12 @@ const iconMap: Record<string, React.ElementType> = {
 }
 
 export function AppSidebar() {
-  const { user, logout } = useAuth()
+  const { user, permissions, logout } = useAuth()
   const pathname = usePathname()
 
   if (!user) return null
 
-  const navigation = getNavigation(user.role)
+  const navigation = getNavigation(user.role, permissions)
 
   const getIcon = (iconName?: string) => {
     if (!iconName) return null

@@ -22,7 +22,7 @@ import { formatPeso } from '@/lib/utils/currency'
 import { POSCart } from './pos-cart'
 import { PaymentModal } from './payment-modal'
 import { Search, Package, Grid3X3, List, Box, Layers } from 'lucide-react'
-import type { Product, InventoryLevel } from '@/lib/types'
+import type { Product, InventoryLevel, InventoryTier } from '@/lib/types'
 
 type UnitType = 'pack' | 'box'
 
@@ -32,7 +32,7 @@ interface UnitSelectionState {
   variant?: Product['variants'][0]
 }
 
-export function POSTerminal() {
+export function POSTerminal({ readOnly = false }: { readOnly?: boolean }) {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -87,13 +87,20 @@ export function POSTerminal() {
 
     let unitPrice: number
     let unitLabel: string
+    let tier: InventoryTier
 
     if (unitType === 'pack') {
       unitPrice = basePrice * inventory.pcsPerPack
       unitLabel = inventory.retailUnit
+      tier = 'retail'
     } else {
-      unitPrice = basePrice * inventory.pcsPerPack * inventory.packsPerBox
+      const wholesaleBasePrice = variant
+        ? product.wholesalePrice + variant.priceAdjustment
+        : product.wholesalePrice
+
+      unitPrice = wholesaleBasePrice * inventory.pcsPerPack * inventory.packsPerBox
       unitLabel = inventory.wholesaleUnit
+      tier = 'wholesale'
     }
 
     addItem({
@@ -104,6 +111,7 @@ export function POSTerminal() {
       quantity: 1,
       unitPrice: unitPrice,
       unitType: unitType,  // Track whether sold as pack or box
+      tier,
       unitLabel: unitLabel,
     })
 
@@ -181,8 +189,9 @@ export function POSTerminal() {
                   return (
                     <button
                       key={product.id}
-                      onClick={() => handleProductClick(product)}
-                      className="flex flex-col items-center p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-left"
+                      onClick={() => !readOnly && handleProductClick(product)}
+                      disabled={readOnly}
+                      className={`flex flex-col items-center p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-left ${readOnly ? 'cursor-not-allowed opacity-60' : ''}`}
                     >
                       {settings.pos.showProductImages && (
                         <div className="flex size-12 items-center justify-center rounded-lg bg-muted mb-2">
@@ -214,8 +223,9 @@ export function POSTerminal() {
                   return (
                     <button
                       key={product.id}
-                      onClick={() => handleProductClick(product)}
-                      className="flex items-center justify-between w-full p-3 rounded-lg border bg-card hover:bg-accent transition-colors text-left"
+                      onClick={() => !readOnly && handleProductClick(product)}
+                      disabled={readOnly}
+                      className={`flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent transition-colors ${readOnly ? 'cursor-not-allowed opacity-60' : ''}`}
                     >
                       <div className="flex items-center gap-3">
                         {settings.pos.showProductImages && (

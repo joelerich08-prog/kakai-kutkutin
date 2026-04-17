@@ -21,7 +21,7 @@ import { useSettings } from '@/contexts/settings-context'
 import { formatPeso } from '@/lib/utils/currency'
 import { toast } from 'sonner'
 import type { PaymentType, InventoryTier } from '@/lib/types'
-import { Banknote, Smartphone, CreditCard, Check, Printer } from 'lucide-react'
+import { Banknote, Smartphone, CreditCard, Check } from 'lucide-react'
 
 interface PaymentModalProps {
   open: boolean
@@ -90,11 +90,11 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
 
     const transactionPayload = {
       items: items.map(item => {
-        const tier: InventoryTier = item.unitType === 'box'
-          ? 'wholesale'
-          : item.unitType === 'piece'
-            ? 'shelf'
+        const tier: InventoryTier = item.tier ?? (
+          item.unitType === 'box' ? 'wholesale'
+            : item.unitType === 'piece' ? 'shelf'
             : 'retail'
+        )
 
         return {
           productId: item.productId,
@@ -159,9 +159,7 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
     onClose()
   }
 
-  const handlePrintReceipt = () => {
-    toast.success('Receipt sent to printer')
-  }
+
 
   // Quick amount buttons for cash
   const quickAmounts = [50, 100, 200, 500, 1000].filter(a => a >= total)
@@ -326,10 +324,6 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
             </div>
 
             <DialogFooter className="flex-col sm:flex-row gap-2">
-              <Button variant="outline" onClick={handlePrintReceipt} className="flex-1">
-                <Printer className="size-4 mr-2" />
-                Print Receipt
-              </Button>
               <Button onClick={handleClose} className="flex-1">
                 New Sale
               </Button>

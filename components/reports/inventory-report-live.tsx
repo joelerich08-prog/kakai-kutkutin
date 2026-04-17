@@ -191,7 +191,7 @@ export function InventoryReportLive({ dateRange }: InventoryReportLiveProps) {
       <div className="grid gap-6 lg:grid-cols-2">
         <div>
           <h3 className="mb-4 text-lg font-semibold">Stock Status Distribution</h3>
-          <div className="h-[280px]">
+          <div className="h-[280px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={stockStatusData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={2} dataKey="value">
@@ -208,7 +208,7 @@ export function InventoryReportLive({ dateRange }: InventoryReportLiveProps) {
 
         <div>
           <h3 className="mb-4 text-lg font-semibold">Stock by Category and Tier</h3>
-          <div className="h-[280px]">
+          <div className="h-[280px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={categoryStockData}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -302,3 +302,5 @@ export function InventoryReportLive({ dateRange }: InventoryReportLiveProps) {
     </div>
   )
 }
+
+

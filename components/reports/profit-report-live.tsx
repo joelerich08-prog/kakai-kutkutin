@@ -196,7 +196,7 @@ export function ProfitReportLive({ dateRange }: ProfitReportLiveProps) {
 
       <div>
         <h3 className="mb-4 text-lg font-semibold">Revenue vs Cost vs Profit</h3>
-        <div className="h-[300px]">
+        <div className="h-[300px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={profitData}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -221,7 +221,7 @@ export function ProfitReportLive({ dateRange }: ProfitReportLiveProps) {
 
       <div>
         <h3 className="mb-4 text-lg font-semibold">Daily Profit Trend</h3>
-        <div className="h-[200px]">
+        <div className="h-[300px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={dailyProfitTrend}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
@@ -301,3 +301,5 @@ export function ProfitReportLive({ dateRange }: ProfitReportLiveProps) {
     </div>
   )
 }
+
+

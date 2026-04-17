@@ -53,7 +53,7 @@ export function SalesChart({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
+          <div className="h-[300px] rounded-lg border border-slate-200 bg-slate-100 p-4 shadow-sm">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
@@ -105,3 +105,4 @@ export function SalesChart({
     </Card>
   )
 }
+

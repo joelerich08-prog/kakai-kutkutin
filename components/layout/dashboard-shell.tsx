@@ -63,7 +63,7 @@ export function DashboardShell({
       <AppSidebar />
       <SidebarInset>
         <DashboardHeader title={title} description={description} headerAction={headerAction} />
-        <main className="flex-1 overflow-auto p-4 md:p-6">
+        <main className="flex-1 overflow-auto p-4 md:p-6 bg-slate-900">
           <div className="flex flex-col gap-6">
             {children}
           </div>
