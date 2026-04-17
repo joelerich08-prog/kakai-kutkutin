@@ -127,6 +127,9 @@ interface InventoryContextType {
 
   // Refresh inventory from API
   refreshInventory: () => Promise<void>
+
+  // Refresh activity logs from API
+  refreshActivityLogs: () => Promise<void>
 }
 
 const InventoryContext = createContext<InventoryContextType | undefined>(undefined)
@@ -160,9 +163,34 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
           updatedAt: new Date(inv.updatedAt),
         }))
         setInventoryLevels(inventoryWithDates)
+
+        // Fetch activity logs
+        try {
+          const activityData = await apiFetch<any[]>('activity-logs/get_all.php')
+          const mappedActivityLog: ActivityLogEntry[] = activityData
+            .filter(log => ['transfer', 'breakdown', 'receiving', 'adjustment'].includes(log.action))
+            .map(log => ({
+              id: log.id,
+              type: log.action as ActivityLogEntry['type'],
+              description: log.details,
+              details: `User: ${log.userName}`,
+              user: log.userName,
+              timestamp: new Date(log.timestamp),
+            }))
+          setActivityLog(mappedActivityLog)
+        } catch (activityError) {
+          // Don't fail if activity logs are unauthorized (role-specific), just skip them
+          if (!isApiErrorWithStatus(activityError, 401)) {
+            console.error('Failed to load activity logs:', activityError)
+          }
+          setActivityLog([])
+        }
       } catch (error) {
         if (isApiErrorWithStatus(error, 401)) {
+          // Session may have expired, set empty inventory but don't show error
+          // The auth check on the page will redirect if truly unauthorized
           setInventoryLevels([])
+          setActivityLog([])
           return
         }
         const message = error instanceof Error ? error.message : 'Failed to load inventory levels'
@@ -193,22 +221,24 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const addActivityLog = useCallback((
-    type: ActivityLogEntry['type'],
-    description: string,
-    details: string,
-    user: string
-  ) => {
-    const newEntry: ActivityLogEntry = {
-      id: `act_${Date.now()}`,
-      type,
-      description,
-      details,
-      user,
-      timestamp: new Date(),
+  const refreshActivityLogs = useCallback(async () => {
+    try {
+      const activityData = await apiFetch<any[]>('activity-logs/get_all.php')
+      const mappedActivityLog: ActivityLogEntry[] = activityData
+        .filter(log => ['transfer', 'breakdown', 'receiving', 'adjustment'].includes(log.action))
+        .map(log => ({
+          id: log.id,
+          type: log.action as ActivityLogEntry['type'],
+          description: log.details,
+          details: `User: ${log.userName}`,
+          user: log.userName,
+          timestamp: new Date(log.timestamp),
+        }))
+      setActivityLog(mappedActivityLog)
+    } catch (error) {
+      console.error('Failed to refresh activity logs:', error)
+      setActivityLog([])
     }
-    // Limit activity log to 100 entries to prevent memory issues
-    setActivityLog(prev => [newEntry, ...prev].slice(0, 100))
   }, [])
 
   const getInventory = useCallback((productId: string, variantId?: string) => {
@@ -259,18 +289,14 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       // Refresh inventory from API to get latest state
       await refreshInventory()
 
-      // Add activity log entry
+      // Refresh activity logs from API
+      await refreshActivityLogs()
+
       const tierNames: Record<InventoryTier, string> = {
         wholesale: 'Wholesale',
         retail: 'Retail',
         shelf: 'Store Shelf',
       }
-      addActivityLog(
-        'transfer',
-        `Transferred ${quantity} units from ${tierNames[sourceTier]} to ${tierNames[destTier]}`,
-        `Product ID: ${productId}${variantId ? ` | Variant ID: ${variantId}` : ''}`,
-        userName
-      )
 
       toast({
         title: 'Stock transferred',
@@ -287,7 +313,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
       return { success: false, error: message }
     }
-  }, [refreshInventory, addActivityLog, toast])
+  }, [refreshInventory, refreshActivityLogs, toast])
 
   const breakdownStock = useCallback(async (
     productId: string,
@@ -308,16 +334,8 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       // Refresh inventory from API to get latest state
       await refreshInventory()
 
-      // Add activity log entry
-      const inventory = inventoryLevels.find(inv => inv.productId === productId)
-      if (inventory) {
-        addActivityLog(
-          'breakdown',
-          `Broke down ${quantity} ${inventory.wholesaleUnit}(s) into ${data.retailQtyAdded} ${inventory.retailUnit}(s)`,
-          `Product ID: ${productId}`,
-          userName
-        )
-      }
+      // Refresh activity logs from API
+      await refreshActivityLogs()
 
       toast({
         title: 'Stock breakdown completed',
@@ -334,7 +352,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
       return { success: false, error: message }
     }
-  }, [inventoryLevels, refreshInventory, addActivityLog, toast])
+  }, [refreshInventory, refreshActivityLogs, toast])
 
   const receiveStock = useCallback(async (
     items: Array<{
@@ -384,15 +402,10 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       // Refresh inventory from API to get latest state
       await refreshInventory()
 
-      // Add activity log entry
+      // Refresh activity logs from API
+      await refreshActivityLogs()
+
       const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
-      const itemsList = items.map(i => `${i.productName} (${i.quantity})`).join(', ')
-      addActivityLog(
-        'receiving',
-        `Received ${totalItems} units across ${items.length} product(s)`,
-        `Supplier: ${supplier} | Invoice: ${invoiceNumber} | Items: ${itemsList}${trimmedNotes ? ` | Notes: ${trimmedNotes}` : ''}`,
-        userName
-      )
 
       toast({
         title: 'Stock received',
@@ -409,7 +422,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
       return { success: false, error: message }
     }
-  }, [refreshInventory, addActivityLog, toast])
+  }, [refreshInventory, refreshActivityLogs, toast])
 
   const adjustStock = useCallback(async (
     productId: string,
@@ -440,20 +453,15 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       // Refresh inventory from API to get latest state
       await refreshInventory()
 
-      // Add activity log entry
+      // Refresh activity logs from API
+      await refreshActivityLogs()
+
       const tierNames: Record<InventoryTier, string> = {
         wholesale: 'Wholesale',
         retail: 'Retail',
         shelf: 'Store Shelf'
       }
-      const action = quantityChange > 0 ? 'Added' : 'Removed'
       const absQuantity = Math.abs(quantityChange)
-      addActivityLog(
-        'adjustment',
-        `${action} ${absQuantity} unit(s) ${quantityChange > 0 ? 'to' : 'from'} ${tierNames[tier]}`,
-        `Product ID: ${productId} | Reason: ${reason} | Notes: ${notes}`,
-        userName
-      )
 
       toast({
         title: 'Stock adjusted',
@@ -470,7 +478,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
       return { success: false, error: message }
     }
-  }, [refreshInventory, addActivityLog, toast])
+  }, [refreshInventory, refreshActivityLogs, toast])
 
   const updateInventoryConversion = useCallback(async (
     productId: string,
@@ -494,13 +502,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
 
       await refreshInventory()
-
-      addActivityLog(
-        'adjustment',
-        `Updated conversion for product ${productId}${variantId ? ` variant ${variantId}` : ''}`,
-        `pcsPerPack: ${pcsPerPack}, packsPerBox: ${packsPerBox}`,
-        user?.name || 'system'
-      )
+      await refreshActivityLogs()
 
       toast({
         title: 'Conversion updated',
@@ -517,7 +519,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
       return { success: false, error: message }
     }
-  }, [refreshInventory, addActivityLog, toast, user])
+  }, [refreshInventory, refreshActivityLogs, toast])
 
   const updateInventoryReorder = useCallback(async (
     productId: string,
@@ -539,13 +541,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
 
       await refreshInventory()
-
-      addActivityLog(
-        'adjustment',
-        `Updated restock thresholds for product ${productId}${variantId ? ` variant ${variantId}` : ''}`,
-        `wholesaleReorderLevel: ${wholesaleReorderLevel}, retailRestockLevel: ${retailRestockLevel}, shelfRestockLevel: ${shelfRestockLevel}`,
-        user?.name || 'system'
-      )
+      await refreshActivityLogs()
 
       toast({
         title: 'Restock thresholds updated',
@@ -562,7 +558,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
       })
       return { success: false, error: message }
     }
-  }, [refreshInventory, addActivityLog, toast, user])
+  }, [refreshInventory, refreshActivityLogs, toast])
 
   return (
     <InventoryContext.Provider
@@ -579,6 +575,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
         updateInventoryConversion,
         updateInventoryReorder,
         refreshInventory,
+        refreshActivityLogs,
       }}
     >
       {children}
