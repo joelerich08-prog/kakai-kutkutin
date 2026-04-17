@@ -24,13 +24,20 @@ class Database {
             $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', $host, $dbname, $charset);
 
             try {
-                self::$instance = new PDO($dsn, $user, $pass, [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]);
-                // Set group_concat_max_len to prevent truncation of grouped data
-                self::$instance->exec("SET SESSION group_concat_max_len = 1000000");
-            } catch (PDOException $e) {
+    // TiDB Serverless requires SSL. 
+    // On most Linux environments (like Render), the default CA bundle is at this path:
+    $ssl_ca = '/etc/ssl/certs/ca-certificates.crt';
+
+    self::$instance = new PDO($dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        // CRITICAL: Add these two lines for TiDB Cloud
+        PDO::MYSQL_ATTR_SSL_CA => $ssl_ca,
+        PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false, 
+    ]);
+    
+    self::$instance->exec("SET SESSION group_concat_max_len = 1000000");
+} catch (PDOException $e) {
                 http_response_code(500);
                 header('Content-Type: application/json');
                 echo json_encode(['error' => 'Database connection failed', 'details' => $e->getMessage()]);
