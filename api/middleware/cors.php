@@ -4,13 +4,20 @@
  * Handles Cross-Origin Resource Sharing headers and preflight requests
  */
 
-// Set CORS headers
-$allowedOrigins = [
+// Get allowed origins from environment variable or use defaults
+$defaultOrigins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:3001',
     'http://127.0.0.1:3001',
 ];
+
+$envOrigins = getenv('CORS_ALLOWED_ORIGINS');
+if ($envOrigins) {
+    $allowedOrigins = array_map('trim', explode(',', $envOrigins));
+} else {
+    $allowedOrigins = $defaultOrigins;
+}
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if ($origin && in_array($origin, $allowedOrigins, true)) {
